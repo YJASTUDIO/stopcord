@@ -4,7 +4,7 @@ import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from agent_governance_kit import Guard, ApprovalQueue, DeadmanSwitch, BudgetTracker
+from stopcord import Guard, ApprovalQueue, DeadmanSwitch, BudgetTracker
 
 tmp = Path(tempfile.mkdtemp())
 print(f"[state_dir] {tmp}")

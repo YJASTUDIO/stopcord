@@ -20,7 +20,7 @@ approvals = ApprovalQueue()
 budget = BudgetTracker(hardcap=300000, daily_warn=15000)
 deadman = DeadmanSwitch(guard=guard)
 
-server = Server("agent-governance-kit")
+server = Server("stopcord")
 
 
 @server.list_tools()

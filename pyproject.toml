@@ -1,7 +1,7 @@
 [project]
-name = "agent-governance-kit"
+name = "stopcord"
 version = "0.1.0"
-description = "AI 에이전트(Claude/GPT 등)를 자율 운영할 때 필요한 킬스위치·승인대기열·데드맨스위치·예산캡 오픈소스 툴킷"
+description = "AI 에이전트(Claude/GPT 등)를 자율 운영할 때 당기면 즉시 멈추는 오픈소스 안전장치 — 킬스위치·승인대기열·데드맨스위치·예산캡"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-agent-governance-kit-mcp = "agent_governance_kit.mcp_server:main"
+stopcord-mcp = "stopcord.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=68.0"]

@@ -8,7 +8,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-DEFAULT_STATE_DIR = Path(os.environ.get("AGK_STATE_DIR", "~/.agent-governance-kit")).expanduser()
+DEFAULT_STATE_DIR = Path(os.environ.get("STOPCORD_STATE_DIR", "~/.stopcord")).expanduser()
 
 IRREVERSIBLE_KEYWORDS = [
     "payment", "publish", "hire", "delete", "config_change",

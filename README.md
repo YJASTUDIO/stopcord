@@ -1,6 +1,6 @@
-# agent-governance-kit
+# stopcord
 
-> AI 에이전트(Claude, GPT 등)를 자율 운영에 실제로 맡기는 1인 창업자를 위한 오픈소스 안전장치 툴킷.
+> 당기면 즉시 멈춘다 — AI 에이전트(Claude, GPT 등)를 자율 운영에 실제로 맡기는 1인 창업자를 위한 오픈소스 안전장치 툴킷.
 
 ## 왜 만들었나
 
@@ -10,6 +10,8 @@
 
 다들 이걸 각자 즉석으로 짜고 있어서, 표준화된 작은 오픈소스 라이브러리로 만들었습니다.
 이 저장소의 로직은 실제 AI 자동화 마이크로 SaaS 스튜디오 운영에 매일 쓰이고 있습니다(dogfooding).
+
+이름은 산업 현장의 비상정지 코드(pull cord)에서 따왔습니다 — 문제가 생기면 당겨서 즉시 멈춘다는 뜻입니다.
 
 ## 핵심 기능
 
@@ -26,7 +28,7 @@ Claude, GPT 등 MCP를 지원하는 AI 에이전트가 이 도구들을 tool cal
 
 ```bash
 pip install -e .
-python -m agent_governance_kit.mcp_server
+python -m stopcord.mcp_server
 ```
 
 노출되는 도구: `guard_status`, `guard_activate_kill`, `guard_deactivate_kill`,
@@ -35,7 +37,7 @@ python -m agent_governance_kit.mcp_server
 ## 설치 및 사용 (Python 라이브러리로)
 
 ```python
-from agent_governance_kit import Guard, ApprovalQueue, DeadmanSwitch, BudgetTracker
+from stopcord import Guard, ApprovalQueue, DeadmanSwitch, BudgetTracker
 
 guard = Guard()
 if guard.needs_approval("결제수단 연결해줘"):
