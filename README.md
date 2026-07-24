@@ -47,13 +47,26 @@ queue = ApprovalQueue()
 queue.request("Postiz 콘텐츠 발행", category="publish")
 ```
 
+## CLI로 바로 쓰기
+
+```bash
+pip install -e .
+stopcord status
+stopcord kill --reason "긴급 점검"
+stopcord resume
+stopcord approvals list
+stopcord approvals request "결제수단 연결" --category payment
+stopcord budget status
+stopcord budget log "도메인 등록" 12000
+```
+
 ## 개발/테스트
 
 ```bash
 uv venv --python 3.11 .venv
 source .venv/bin/activate
-uv pip install -e .
-python tests/smoke_test.py
+uv pip install -e ".[dev]"
+pytest tests/  # 9개 케이스
 ```
 
 ## 라이선스
