@@ -1,0 +1,20 @@
+[project]
+name = "agent-governance-kit"
+version = "0.1.0"
+description = "AI 에이전트(Claude/GPT 등)를 자율 운영할 때 필요한 킬스위치·승인대기열·데드맨스위치·예산캡 오픈소스 툴킷"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+agent-governance-kit-mcp = "agent_governance_kit.mcp_server:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
