@@ -35,6 +35,17 @@ def build_parser() -> argparse.ArgumentParser:
     req_p = approvals_sub.add_parser("request", help="승인 요청 등록")
     req_p.add_argument("description", help="작업 설명")
     req_p.add_argument("--category", default="기타")
+    resolve_p = approvals_sub.add_parser("resolve", help="승인 요청을 승인/거부 처리")
+    resolve_p.add_argument("id", help="승인 항목 ID")
+    resolve_p.add_argument("--approved", required=True, choices=["true", "false"], help="승인(true) 또는 거부(false)")
+    resolve_p.add_argument("--note", default="", help="처리 메모")
+
+    deadman_p = sub.add_parser("deadman", help="데드맨스위치 확인")
+    deadman_sub = deadman_p.add_subparsers(dest="deadman_command", required=True)
+    deadman_check_p = deadman_sub.add_parser("check", help="마지막 응답 시각 기준으로 데드맨스위치 상태 판정")
+    deadman_check_p.add_argument("last_response_at", help="마지막 사람 응답 시각 (ISO 8601, 예: 2026-07-25T10:00:00+09:00)")
+    deadman_check_p.add_argument("--warn-hours", type=float, default=24, help="경고 임계값 (시간, 기본 24)")
+    deadman_check_p.add_argument("--kill-hours", type=float, default=36, help="자동정지 임계값 (시간, 기본 36)")
 
     budget_p = sub.add_parser("budget", help="예산 조회/기록")
     budget_sub = budget_p.add_subparsers(dest="budget_command", required=True)
@@ -69,6 +80,21 @@ def main(argv=None) -> int:
         elif args.approvals_command == "request":
             entry_id = queue.request(args.description, category=args.category)
             print(f"승인 요청 등록됨 (id={entry_id})")
+        elif args.approvals_command == "resolve":
+            approved = args.approved == "true"
+            ok = queue.resolve(args.id, approved=approved, note=args.note)
+            if ok:
+                print(f"승인 처리 완료 (id={args.id}, approved={approved})")
+            else:
+                print(f"해당 ID를 찾을 수 없음: {args.id}")
+    elif args.command == "deadman":
+        from .deadman import DeadmanSwitch
+        ds = DeadmanSwitch(guard=guard, warn_hours=args.warn_hours, kill_hours=args.kill_hours)
+        from datetime import datetime as _dt
+        last = _dt.fromisoformat(args.last_response_at)
+        result = ds.check(last)
+        print(f"action={result.action}, elapsed={result.elapsed_hours:.1f}h")
+        print(result.message)
     elif args.command == "budget":
         tracker = BudgetTracker(hardcap=300000, daily_warn=15000)
         if args.budget_command == "status":

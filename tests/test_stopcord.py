@@ -78,3 +78,44 @@ def test_budget_tracker_hardcap(state_dir):
     status2 = bt.log_spend("서버비", 290000)
     assert status2["over_hardcap"] is True
     assert status2["total_spent_this_month"] == 302000
+
+
+def test_approval_resolve_approve(state_dir):
+    aq = ApprovalQueue(state_dir=state_dir)
+    eid = aq.request("도메인 구매", category="payment")
+    ok = aq.resolve(eid, approved=True, note="회장 승인")
+    assert ok is True
+    assert len(aq.list_pending()) == 0
+    data = aq._read()
+    assert len(data["resolved"]) == 1
+    assert data["resolved"][0]["approved"] is True
+
+
+def test_approval_resolve_reject(state_dir):
+    aq = ApprovalQueue(state_dir=state_dir)
+    eid = aq.request("임의 결제", category="payment")
+    ok = aq.resolve(eid, approved=False, note="회장 거부")
+    assert ok is True
+    data = aq._read()
+    assert data["resolved"][0]["approved"] is False
+
+
+def test_deadman_custom_thresholds(state_dir):
+    g = Guard(state_dir=state_dir)
+    ds = DeadmanSwitch(guard=g, warn_hours=2, kill_hours=4)
+    r = ds.check(datetime.now(timezone.utc) - timedelta(hours=3))
+    assert r.action == "warn"
+    r = ds.check(datetime.now(timezone.utc) - timedelta(hours=5))
+    assert r.action == "killed"
+    assert g.is_killed() is True
+
+
+def test_mcp_tool_count():
+    """MCP 서버가 9개 도구를 노출하는지 확인 (기존 7 + approval_resolve + deadman_check)."""
+    from stopcord.mcp_server import list_tools
+    import asyncio
+    tools = asyncio.run(list_tools())
+    names = [t.name for t in tools]
+    assert "approval_resolve" in names
+    assert "deadman_check" in names
+    assert len(tools) == 9
